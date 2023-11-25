@@ -4,7 +4,10 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Tabs and spaces
 vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
+vim.opt.softtabstop = 0
+vim.opt.shiftwidth = 4
+vim.opt.smarttab = true
+vim.opt.expandtab = true
 
 -- Show line number
 vim.opt.number = true
@@ -15,13 +18,15 @@ vim.opt.hlsearch = true
 -- Highlight cursorline
 vim.opt.cursorline = true
 
--------------------------------------------------------------------------------
--- Colors
--------------------------------------------------------------------------------
-vim.opt.termguicolors = true
---vim.cmd [[ airline_theme codedark ]]
-vim.g['codedark_conservative'] = 1
-vim.cmd [[ colorscheme codedark ]]
+-- settings for markdown-preview
+vim.g.mkdp_filetypes = { "markdown" }
+ --               vim.g.mkdp_command_for_global = 0
+--                vim.g.mkdp_auto_start = 1
+ --               vim.g.mkdp_auto_close = 1
+vim.g.mkdp_open_to_the_world = 1
+vim.g.mkdp_open_ip = "127.0.0.1"
+vim.g.mkdp_port = 8080
+vim.g.mkdp_echo_preview_url = 1
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -56,6 +61,14 @@ require('packer').startup(
         use 'hrsh7th/cmp-cmdline'
     end
 )
+
+-------------------------------------------------------------------------------
+-- Colors
+-------------------------------------------------------------------------------
+vim.opt.termguicolors = true
+--vim.cmd [[ airline_theme codedark ]]
+vim.g['codedark_conservative'] = 1
+vim.cmd [[ colorscheme codedark ]]
 
 -------------------------------------------------------------------------------
 -- Config for indent-blankline
@@ -116,11 +129,10 @@ require("nvim-tree").setup( {
 require("mason").setup()
 require("mason-lspconfig").setup( {
     ensure_installed = {
---        "clangd",
+        "clangd",
         "jsonls",
         "bashls",
         "marksman",
---        "sumneko_lua",
         "pyright",
         "yamlls"
     },
@@ -146,21 +158,21 @@ cmp.setup( {
         ['<C-d>'] = cmp.mapping.abort(),
         ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
         ['<Down>'] = cmp.mapping.select_next_item(select_opts),
-        ["<Tab>"] = cmp.mapping(
-            function(fallback)
-                if cmp.visible() then
-                    cmp.select_next_item()
-                elseif luasnip.expandable() then
-                    luasnip.expand()
-                elseif luasnip.expand_or_jumpable() then
-                    luasnip.expand_or_jump()
-                elseif check_backspace() then
-                    fallback()
-                else
-                    fallback()
-                end
-            end, { "i", "s", }
-        ),
+--        ["<Tab>"] = cmp.mapping(
+--            function(fallback)
+--                if cmp.visible() then
+--                    cmp.select_next_item()
+--                elseif luasnip.expandable() then
+--                    luasnip.expand()
+--                elseif luasnip.expand_or_jumpable() then
+--                    luasnip.expand_or_jump()
+--                elseif check_backspace() then
+--                    fallback()
+--                else
+--                    fallback()
+--                end
+--            end, { "i", "s", }
+--        ),
         ["<S-Tab>"] = cmp.mapping(
             function(fallback)
                 if cmp.visible() then
@@ -208,22 +220,26 @@ cmp.setup.cmdline(':', {
 } )
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local lspconfig = require("lspconfig")
 
-require("lspconfig").jsonls.setup( {
+lspconfig['clangd'].setup {
     capabilities = capabilities
-} )
-require("lspconfig").bashls.setup( {
+}
+lspconfig['jsonls'].setup {
     capabilities = capabilities
-} )
-require("lspconfig").marksman.setup( {
+}
+lspconfig['bashls'].setup {
     capabilities = capabilities
-} )
-require("lspconfig").pyright.setup( {
+}
+lspconfig['marksman'].setup {
     capabilities = capabilities
-} )
-require("lspconfig").yamlls.setup( {
+}
+lspconfig['pyright'].setup {
     capabilities = capabilities
-} )
+}
+lspconfig['yamlls'].setup {
+    capabilities = capabilities
+}
 
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
@@ -257,7 +273,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end
 })
 
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Key mapping
 -------------------------------------------------------------------------------
 vim.api.nvim_set_keymap("n", "<C-f>", ":NvimTreeFocus<cr>", { noremap = true })
