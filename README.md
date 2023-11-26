@@ -13,3 +13,11 @@ cp init.lua ~/.config/nvim/init.lua
 - nodejs
 - npm
 - unzip
+
+
+### install language server for Makefiles
+
+```
+pip install autotools-language-server
+pip install --upgrade jsonschema
+```

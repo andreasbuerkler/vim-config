@@ -60,6 +60,11 @@ vim.g['codedark_conservative'] = 1
 vim.cmd [[ colorscheme codedark ]]
 
 -------------------------------------------------------------------------------
+-- Config for vim-airline
+-------------------------------------------------------------------------------
+vim.g['airline_powerline_fonts'] = 1
+
+-------------------------------------------------------------------------------
 -- Config for indent-blankline
 -------------------------------------------------------------------------------
 vim.opt.list = true
@@ -77,7 +82,7 @@ require("ibl").setup( {
         remove_blankline_trail = false
     },
     scope = {
-        enabled = true
+        enabled = false
     },
 } )
 
@@ -125,7 +130,7 @@ require("mason-lspconfig").setup( {
         "bashls",
         "marksman",
         "pyright",
-        "yamlls"
+        "yamlls",
     },
 } )
 
@@ -229,6 +234,9 @@ lspconfig['pyright'].setup {
     capabilities = capabilities
 }
 lspconfig['yamlls'].setup {
+    capabilities = capabilities
+}
+lspconfig['autotools_ls'].setup {
     capabilities = capabilities
 }
 
