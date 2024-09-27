@@ -49,6 +49,11 @@ require('packer').startup(
         use 'hrsh7th/cmp-buffer'
         use 'hrsh7th/cmp-path'
         use 'hrsh7th/cmp-cmdline'
+        use {'zbirenbaum/copilot.lua',
+            requires = {
+                'zbirenbaum/copilot-cmp'
+            }
+        }
     end
 )
 
@@ -124,6 +129,7 @@ require("nvim-tree").setup( {
 -------------------------------------------------------------------------------
 require("mason").setup()
 require("mason-lspconfig").setup( {
+    PATH = "prepend",
     ensure_installed = {
         "clangd",
         "jsonls",
@@ -131,8 +137,24 @@ require("mason-lspconfig").setup( {
         "marksman",
         "pyright",
         "yamlls",
+        "autotools_ls",
+        "hdl_checker",
     },
 } )
+
+-------------------------------------------------------------------------------
+-- Copilot
+-------------------------------------------------------------------------------
+require("copilot").setup( {
+    suggestion = {
+        enabled = false,
+    },
+    panel = {
+        enabled = false,
+    },
+} )
+
+require("copilot_cmp").setup()
 
 -------------------------------------------------------------------------------
 -- Autocomplete
@@ -182,6 +204,7 @@ cmp.setup( {
         ),
     } ),
     sources = cmp.config.sources( {
+        { name = 'copilot' },
         { name = 'nvim_lsp' },
         { name = 'vsnip' },
         { name = 'buffer' },
@@ -237,6 +260,10 @@ lspconfig['yamlls'].setup {
     capabilities = capabilities
 }
 lspconfig['autotools_ls'].setup {
+    capabilities = capabilities
+}
+
+lspconfig['hdl_checker'].setup {
     capabilities = capabilities
 }
 
